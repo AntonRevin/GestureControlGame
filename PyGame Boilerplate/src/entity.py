@@ -4,10 +4,9 @@
 """
 
 # Third party imports
-import pygame
+from pygame import sprite, image
 
-#
-class Entity(pygame.sprite.Sprite):
+class Entity(sprite.Sprite):
 
     # Object constructor
     def __init__(self, imageFileName, posX=0, posY=0):
@@ -15,7 +14,7 @@ class Entity(pygame.sprite.Sprite):
         super.__init__()
 
         # Load image
-        self.image = pygame.image.load(imageFileName).convert_alpha()
+        self.image = image.load(imageFileName).convert_alpha()
 
         # Create rect
         self.rect = self.image.get_rect()

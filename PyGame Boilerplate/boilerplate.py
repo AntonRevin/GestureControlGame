@@ -18,6 +18,7 @@ SCREEN_SIZE = (1280, 720)
 WINDOW_TITLE = "PyGame Boilerplate"
 FRAME_RATE = 60
 CLEAR_COLOUR = Colour.BLACK.value
+CAPTURE_SIZE = (640, 360)
 
 # Define global variables
 carryOn = True
@@ -29,8 +30,10 @@ pygame.display.set_caption(WINDOW_TITLE)
 
 # Temporary OpenCV video capture to streamable object test
 cam = cv2.VideoCapture(0)
+cam.set(cv2.CAP_PROP_FRAME_WIDTH, CAPTURE_SIZE[0])
+cam.set(cv2.CAP_PROP_FRAME_HEIGHT, CAPTURE_SIZE[1])
 ret_val, img = cam.read()
-streamObject = Stream((img.shape[1],img.shape[0]), screen)
+streamObject = Stream(CAPTURE_SIZE, screen)
 
 # Main program loop
 while carryOn:
@@ -42,9 +45,9 @@ while carryOn:
             carryOn = False 
 
     # Logic
-        # Temporary streamable object test
-        ret_val, img = cam.read()
-        streamObject.update(img)
+    # Temporary streamable object test
+    ret_val, img = cam.read()
+    streamObject.update(img)
 
     # Clear screen
     screen.fill(CLEAR_COLOUR)

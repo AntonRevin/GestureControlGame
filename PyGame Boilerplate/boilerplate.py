@@ -18,7 +18,7 @@ SCREEN_SIZE = (1280, 720)
 WINDOW_TITLE = "PyGame Boilerplate"
 FRAME_RATE = 60
 CLEAR_COLOUR = Colour.BLACK.value
-CAPTURE_SIZE = (640, 360)
+CAPTURE_SIZE = (1280, 720)
 
 # Define global variables
 carryOn = True
@@ -43,6 +43,9 @@ while carryOn:
         # User requested program shut-down
         if event.type == pygame.QUIT:
             carryOn = False 
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_ESCAPE:
+                carryOn = False
 
     # Logic
     # Temporary streamable object test

@@ -11,5 +11,5 @@ if __name__ == "__main__":
         cv2.imshow("input", img)
         if cv2.waitKey(1) == 27:
             break
+        
     cv2.destroyAllWindows()
-#test

@@ -1,12 +1,11 @@
 """
-    src.entity
-    Wrapper for the PyGame Sprite object
+    src.player
 """
 
 # Third party imports
 from pygame import sprite, image
 
-class Entity(sprite.Sprite):
+class Player(sprite.Sprite):
 
     # Object constructor
     def __init__(self, imageFileName, posX=0, posY=0):
@@ -20,6 +19,10 @@ class Entity(sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.x = posX
         self.rect.y = posY
-    
+
+    # Update function
     def update(self):
-        pass
+        if self.rect.y <= 0:
+            self.rect.y = 0
+        if self.rect.y >= 600 - 128:
+            self.rect.y = 600 - 128

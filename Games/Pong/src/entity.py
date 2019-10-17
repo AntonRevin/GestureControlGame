@@ -21,5 +21,3 @@ class Entity(sprite.Sprite):
         self.rect.x = posX
         self.rect.y = posY
     
-    def update(self):
-        pass

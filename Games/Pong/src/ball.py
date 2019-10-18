@@ -49,7 +49,7 @@ class Ball(sprite.Sprite):
             playerY = self.player2.rect.y
             #playerW = self.player2.rect.w
             playerH = self.player2.rect.h
-        if abs(self.posX - playerX) <= 1 and self.rect.y >= playerY - 32 and self.rect.y + 32 <= playerY + playerH + 16:
+        if abs(self.posX - playerX) <= 1 and self.rect.y >= playerY - 32 - 16 and self.rect.y + 32 <= playerY + playerH + 32:
             bounceAngle = ((playerY + (playerH/2) - self.posY - (self.rect.h/2))/64)*(pi/3)*-1
             self.direction = (-1*self.direction[0], sin(bounceAngle))
 

@@ -9,6 +9,7 @@ import cv2
 # Local imports
 from src.colour import Colour
 from src.stream import Stream
+from src.text import Text
 
 # Initialize the game engine
 pygame.init()
@@ -35,6 +36,10 @@ cam.set(cv2.CAP_PROP_FRAME_HEIGHT, CAPTURE_SIZE[1])
 ret_val, img = cam.read()
 streamObject = Stream(CAPTURE_SIZE, screen)
 
+# Create Text object
+font = pygame.font.Font('freesansbold.ttf', 32)
+txt = Text(screen, font, "Test", Colour.WHITE.value, (40,40))
+
 # Main program loop
 while carryOn:
     
@@ -57,6 +62,7 @@ while carryOn:
 
     # Draw sprites
     streamObject.draw()
+    txt.draw()
 
     # Sync
     pygame.display.flip()

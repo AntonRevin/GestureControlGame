@@ -37,7 +37,7 @@ pygame.display.set_caption(WINDOW_TITLE)
 background = Entity(join('media', 'fancy-court.png'))
 enemy = AI(join('media', 'fancy-paddle-grey.png'), posX=758, posY=236)
 player = Player(join('media', 'fancy-paddle-green.png'), posX=10, posY=236)
-ball = Ball(join('media', 'fancy-ball.png'), player, enemy, direction=(1,0), speed=3, leftZone=16, rightZone=800-16)
+ball = Ball(join('media', 'fancy-ball.png'), player, enemy, direction=(1,0), speed=3, leftZone=32, rightZone=800-32)
 enemy.target = ball
 drawGroup = pygame.sprite.Group()
 drawGroup.add(background)

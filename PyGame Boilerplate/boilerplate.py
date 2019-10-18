@@ -33,7 +33,6 @@ pygame.display.set_caption(WINDOW_TITLE)
 cam = cv2.VideoCapture(0)
 cam.set(cv2.CAP_PROP_FRAME_WIDTH, CAPTURE_SIZE[0])
 cam.set(cv2.CAP_PROP_FRAME_HEIGHT, CAPTURE_SIZE[1])
-ret_val, img = cam.read()
 streamObject = Stream(CAPTURE_SIZE, screen)
 
 # Create Text object

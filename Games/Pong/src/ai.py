@@ -31,7 +31,7 @@ class AI(sprite.Sprite):
         # TODO: make the AI more aggressive by targeting the edge of the bat.
         delta = self.target.rect.y - self.rect.y - 64
         if abs(delta) >= self.deadZone:
-            self.rect.y += copysign(self.followSpeed, delta)
+            self.rect.y += copysign(self.followSpeed, delta) 
         if self.rect.y <= 0:
             self.rect.y = 0
         elif self.rect.y >= 600 - 128:

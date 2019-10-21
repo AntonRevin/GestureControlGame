@@ -3,12 +3,11 @@
 """
 
 # Third party imports
-import pygame
 from os.path import join
 from math import sin, pi
 from random import random
+import pygame
 import numpy as np
-import cv2
 
 # Local imports
 from src.colour import Colour
@@ -17,6 +16,7 @@ from src.ai import AI
 from src.ball import Ball
 from src.player import Player
 from src.text import Text
+from src.camerahandler import CameraHandler
 
 # Initialize the game engine
 pygame.init()
@@ -27,6 +27,10 @@ WINDOW_TITLE = "Pong Game"
 FRAME_RATE = 60
 CLEAR_COLOUR = Colour.BLACK.value
 CAPTURE_SIZE = (640, 320)
+CV_LOWER_BOUNDARY = np.array([24*(179/359),  82*(255/100), 31*(255/100)])
+CV_UPPER_BOUNDARY = np.array([52*(179/359), 100*(255/100), 71*(255/100)])
+CV_OPEN_KERNEL = np.ones((5, 5))
+CV_CLOSE_KERNEL = np.ones((20, 20))
 
 # Define global variables
 carryOn = True
@@ -56,14 +60,9 @@ ball.rect.y = ballStartPosition[1]
 scorePlayer1 = 0
 scorePlayer2 = 0
 
-# TEMP CV
-lowerBound=np.array([24*(179/359),82*(255/100),31*(255/100)])
-upperBound=np.array([52*(179/359),100*(255/100),71*(255/100)])
-cam = cv2.VideoCapture(0)
-cam.set(cv2.CAP_PROP_FRAME_WIDTH, CAPTURE_SIZE[0])
-cam.set(cv2.CAP_PROP_FRAME_HEIGHT, CAPTURE_SIZE[1])
-kernelOpen=np.ones((5,5))
-kernelClose=np.ones((20,20))
+# Machine vision setup
+cameraHandler = CameraHandler(CAPTURE_SIZE, CV_LOWER_BOUNDARY, CV_UPPER_BOUNDARY, CV_OPEN_KERNEL, CV_CLOSE_KERNEL)
+cameraHandler.startCameraStream()
 
 # UI
 font = pygame.font.Font('freesansbold.ttf', 32)
@@ -75,7 +74,7 @@ while carryOn:
     for event in pygame.event.get():
         # User requested program shut-down
         if event.type == pygame.QUIT:
-            carryOn = False 
+            carryOn = False
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_ESCAPE:
                 carryOn = False
@@ -93,30 +92,17 @@ while carryOn:
                     scorePlayer1 += 1
                 scoreText.update(str(scorePlayer1) + "-" + str(scorePlayer2))
 
-    # Input control player (TEMP) TODO: Make "opencv smart"
-    ret, img = cam.read()
-    #img = img[:,range(320-40,320+40),:] # 320x320
-    img=cv2.resize(img,(240,120))
-    #convert BGR to HSV
-    imgHSV= cv2.cvtColor(img,cv2.COLOR_BGR2HSV)
-    # create the Mask
-    mask=cv2.inRange(imgHSV,lowerBound,upperBound)
-    #morphology
-    maskOpen=cv2.morphologyEx(mask,cv2.MORPH_OPEN,kernelOpen)
-    maskClose=cv2.morphologyEx(maskOpen,cv2.MORPH_CLOSE,kernelClose)
-    maskFinal=maskClose
-    conts,h=cv2.findContours(maskFinal.copy(),cv2.RETR_EXTERNAL,cv2.CHAIN_APPROX_NONE)
-    tempY = 0
-    tempH = 0
-    for i in range(len(conts)):
-        x,tempY,w,tempH=cv2.boundingRect(conts[i])
-    player.rect.y = (tempY + (tempH/2)) * (600/120) - 64
-    cv2.imshow("img", img)
-    """keystate = pygame.key.get_pressed()
+    # OpenCV player control logic
+    player.rect.y = cameraHandler.findControlHeight(SCREEN_SIZE[1])
+    """
+    Old control logic:
+
+    keystate = pygame.key.get_pressed()
     if keystate[pygame.K_w] or keystate[pygame.K_UP]:
         player.rect.y -= 3
     if keystate[pygame.K_s] or keystate[pygame.K_DOWN]:
-        player.rect.y += 3"""
+        player.rect.y += 3
+    """
 
     # Logic
     drawGroup.update()
@@ -135,7 +121,6 @@ while carryOn:
 
     # Wait for requested frame rate
     clock.tick(FRAME_RATE)
-    cv2.waitKey(1)
 
 # Cleanup upon exit
 pygame.quit()

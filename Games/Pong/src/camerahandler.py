@@ -20,7 +20,8 @@ class CameraHandler:
         self.openingKernel = openingKernel
         self.closingKernel = closingKernel
         self.cam = None
-        self.history = []
+        self.player1History = []
+        self.player2History = []
 
     def startCameraStream(self):
         self.cam = cv2.VideoCapture(0)
@@ -43,8 +44,16 @@ class CameraHandler:
         maskClose = cv2.morphologyEx(maskOpen, cv2.MORPH_CLOSE, self.closingKernel)
         maskFinal = maskClose
 
+        # Find player control height
+        player1ControlHeight, self.player1History = self.processFrame(maskFinal[0:120, :], screenHeight, self.player1History)
+        player2ControlHeight, self.player2History = self.processFrame(maskFinal[120:240, :], screenHeight, self.player2History)
+
+        # Return relative screenspace height
+        return player1ControlHeight, player2ControlHeight
+
+    def processFrame(self, frame, screenHeight, playerHistory):
         # Find the countours around the appropriately coloured regions
-        conts, h = cv2.findContours(maskFinal.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
+        conts, h = cv2.findContours(frame.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
 
         # Find the smallest upright bounding rectangle around the found contours
         newHeight = -1
@@ -54,9 +63,8 @@ class CameraHandler:
 
         # Perform sliding average on last 4 values for
         if newHeight != -1:
-            value, self.history = slidingAverage(self.history, newHeight, 4)
+            value, playerHistory = slidingAverage(playerHistory, newHeight, 4)
         else:
-            value = mean(self.history)
+            value = mean(playerHistory)
 
-        # Return relative screenspace height
-        return value
+        return value, playerHistory

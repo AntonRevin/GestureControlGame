@@ -8,6 +8,7 @@ from math import sin, pi
 from random import random
 import pygame
 import numpy as np
+import cv2
 
 # Local imports
 from src.colour import Colour
@@ -27,8 +28,10 @@ WINDOW_TITLE = "Pong Game"
 FRAME_RATE = 60
 CLEAR_COLOUR = Colour.BLACK.value
 CAPTURE_SIZE = (640, 320)
-CV_LOWER_BOUNDARY = np.array([24*(179/359), 82*(255/100), 31*(255/100)])
-CV_UPPER_BOUNDARY = np.array([52*(179/359), 100*(255/100), 71*(255/100)])
+# HSV 52 93 85
+# HSV 59 96 66
+CV_LOWER_BOUNDARY = np.array([45*(179/359), 80*(255/100), 60*(255/100)])
+CV_UPPER_BOUNDARY = np.array([60*(179/359), 100*(255/100), 90*(255/100)])
 CV_OPEN_KERNEL = np.ones((5, 5))
 CV_CLOSE_KERNEL = np.ones((20, 20))
 
@@ -45,12 +48,16 @@ background = Entity(join('media', 'fancy-court.png'))
 #enemy = AI(join('media', 'fancy-paddle-grey.png'), followSpeed=4, posX=758, posY=236)
 player1 = Player(join('media', 'fancy-paddle-green.png'), posX=10, posY=236)
 player2 = Player(join('media', 'fancy-paddle-green.png'), posX=758, posY=236)
-ball = Ball(join('media', 'fancy-ball.png'), player1, player2, direction=(1, 0), speed=6, leftZone=16, rightZone=800-16)
+ball = Ball(join('media', 'fancy-ball.png'), player1, player2, direction=(1, 0), speed=18, leftZone=16, rightZone=800-16)
+player1Ghost = Entity(join('media', 'ghost.png'))
+player2Ghost = Entity(join('media', 'ghost.png'))
 drawGroup = pygame.sprite.Group()
 drawGroup.add(background)
 drawGroup.add(player1)
 drawGroup.add(player2)
 drawGroup.add(ball)
+drawGroup.add(player1Ghost)
+drawGroup.add(player2Ghost)
 
 # Game setup
 ballStartPosition = (SCREEN_SIZE[0]/2 - ball.rect.w/2, SCREEN_SIZE[1]/2 - ball.rect.h/2)
@@ -93,7 +100,7 @@ while carryOn:
                 scoreText.update(str(scorePlayer1) + "-" + str(scorePlayer2))
 
     # OpenCV player control logic
-    player1.rect.y, player2.rect.y = cameraHandler.findControlHeight(SCREEN_SIZE[1])
+    player1.rect.y, player2.rect.y = cameraHandler.findControlHeight(SCREEN_SIZE, player1Ghost, player2Ghost)
 
     # Logic
     drawGroup.update()
@@ -112,6 +119,7 @@ while carryOn:
 
     # Wait for requested frame rate
     clock.tick(FRAME_RATE)
+    cv2.waitKey(1)
 
 # Cleanup upon exit
 pygame.quit()

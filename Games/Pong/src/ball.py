@@ -44,15 +44,22 @@ class Ball(sprite.Sprite):
             playerY = self.player1.rect.y
             #playerW = self.player1.rect.w
             playerH = self.player1.rect.h
+
+            if self.posX - playerX <= 0 and self.rect.y >= playerY - 32 - 16 and self.rect.y + 32 <= playerY + playerH + 32:
+                bounceAngle = ((playerY + (playerH/2) - self.posY - (self.rect.h/2))/64)*(pi/2)*-1
+                self.direction = (-1*self.direction[0], sin(bounceAngle))
+                self.posX = playerX
         else:
             playerX = self.player2.rect.x - 32
             playerY = self.player2.rect.y
             #playerW = self.player2.rect.w
             playerH = self.player2.rect.h
-        if abs(self.posX - playerX) <= 1 and self.rect.y >= playerY - 32 - 16 and self.rect.y + 32 <= playerY + playerH + 32:
-            bounceAngle = ((playerY + (playerH/2) - self.posY - (self.rect.h/2))/64)*(pi/3)*-1
-            self.direction = (-1*self.direction[0], sin(bounceAngle))
-
+            
+            if self.posX - playerX >= 0 and self.rect.y >= playerY - 32 - 16 and self.rect.y + 32 <= playerY + playerH + 32:
+                bounceAngle = ((playerY + (playerH/2) - self.posY - (self.rect.h/2))/64)*(pi/2)*-1
+                self.direction = (-1*self.direction[0], sin(bounceAngle))
+                self.posX = playerX
+        
         # Check for "goals"
         if self.rect.x < self.leftZone:
             event.post(event.Event(USEREVENT, id="p1Lose"))

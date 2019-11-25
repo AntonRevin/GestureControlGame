@@ -1,6 +1,7 @@
 # USAGE
 # python video_facial_landmarks.py --shape-predictor shape_predictor_68_face_landmarks.dat
-# python video_facial_landmarks.py --shape-predictor shape_predictor_68_face_landmarks.dat --picamera 1
+
+# SRC: https://www.pyimagesearch.com/2017/04/10/detect-eyes-nose-lips-jaw-dlib-opencv-python/
 
 # import the necessary packages
 from imutils.video import VideoStream
@@ -56,7 +57,7 @@ while True:
 		for (x, y) in shape:
 			cv2.circle(frame, (x, y), 1, (0, 0, 255), -1)
 
-		(x1,y1) = shape[30]
+		(x1,y1) = shape[30] # tip of the nose
 		(x2,y2) = shape[29]
 		(x3,y3) = shape[28]
 		(x4,y4) = shape[27]
@@ -66,7 +67,7 @@ while True:
 		avgx /= 4
 		deltax = x1 - avgx
 		avgy = (y2 + y3) / 2
-		deltay = y1 - (avgy)*1.05
+		deltay = y1 - (avgy)*1.02
 		cv2.circle(frame, (x1,y1), 4, (255, 0, 0), -1)
 		cv2.arrowedLine(frame, (x1,y1), (int(x1 + deltax * 16), int(y1 + (deltay)*4)), (255,0,0), thickness=5, tipLength=0.25)
 	  

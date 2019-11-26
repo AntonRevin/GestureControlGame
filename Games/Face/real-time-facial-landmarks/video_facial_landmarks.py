@@ -12,6 +12,8 @@ import imutils
 import time
 import dlib
 import cv2
+
+from src.utilities import slidingAverage
  
 # construct the argument parse and parse the arguments
 ap = argparse.ArgumentParser()
@@ -31,6 +33,13 @@ predictor = dlib.shape_predictor(args["shape_predictor"])
 print("[INFO] camera sensor warming up...")
 vs = VideoStream(usePiCamera=args["picamera"] > 0).start()
 time.sleep(1.0)
+
+# SMOOTHING VARS
+_deltaXHistory = []
+_deltaYHistory = []
+_deltaX = 0
+_deltaY = 0
+smoothingLevel = 4
 
 # loop over the frames from the video stream
 while True:
@@ -52,10 +61,10 @@ while True:
 		shape = predictor(gray, rect)
 		shape = face_utils.shape_to_np(shape)
 
-		# loop over the (x, y)-coordinates for the facial landmarks
-		# and draw them on the image
+		""" # Draw facial tracking points
 		for (x, y) in shape:
 			cv2.circle(frame, (x, y), 1, (0, 0, 255), -1)
+		"""
 
 		(x1,y1) = shape[30] # tip of the nose
 		(x2,y2) = shape[29]
@@ -68,8 +77,11 @@ while True:
 		deltax = x1 - avgx
 		avgy = (y2 + y3) / 2
 		deltay = y1 - (avgy)*1.02
+		# Perform smoothing
+		_deltaX, _deltaXHistory = slidingAverage(_deltaXHistory, deltax, smoothingLevel)
+		_deltaY, _deltaYHistory = slidingAverage(_deltaYHistory, deltay, smoothingLevel)
 		cv2.circle(frame, (x1,y1), 4, (255, 0, 0), -1)
-		cv2.arrowedLine(frame, (x1,y1), (int(x1 + deltax * 16), int(y1 + (deltay)*4)), (255,0,0), thickness=5, tipLength=0.25)
+		cv2.arrowedLine(frame, (x1,y1), (int(x1 + _deltaX * 16), int(y1 + (_deltaY)*4)), (255,0,0), thickness=5, tipLength=0.25)
 	  
 	# show the frame
 	cv2.imshow("Frame", frame)

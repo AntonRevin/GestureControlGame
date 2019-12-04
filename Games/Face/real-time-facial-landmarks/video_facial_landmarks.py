@@ -100,7 +100,7 @@ while True:
 		if _deltaY > DEADZONE:
 			if q < 1:
 				pred = "DOWN"
-		cv2.putText(frame, pred, (0,26), cv2.FONT_HERSHEY_SIMPLEX, 1, (255,255,255))
+		cv2.putText(frame, pred, (0, 26), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255))
 
 	# show the frame
 	cv2.imshow("Frame", frame)

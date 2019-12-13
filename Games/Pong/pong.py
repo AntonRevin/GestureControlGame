@@ -30,10 +30,12 @@ CLEAR_COLOUR = Colour.BLACK.value
 CAPTURE_SIZE = (640, 320)
 # HSV 52 93 85
 # HSV 59 96 66
-CV_LOWER_BOUNDARY = np.array([45*(179/359), 80*(255/100), 60*(255/100)])
-CV_UPPER_BOUNDARY = np.array([60*(179/359), 100*(255/100), 90*(255/100)])
+#CV_LOWER_BOUNDARY = np.array([45*(179/359), 80*(255/100), 60*(255/100)])
+CV_LOWER_BOUNDARY = np.array([45*(179/359), 80*(255/100), 30*(255/100)])
+#CV_UPPER_BOUNDARY = np.array([60*(179/359), 100*(255/100), 90*(255/100)])
+CV_UPPER_BOUNDARY = np.array([60*(179/359), 100*(255/100), 100*(255/100)])
 CV_OPEN_KERNEL = np.ones((5, 5))
-CV_CLOSE_KERNEL = np.ones((20, 20))
+CV_CLOSE_KERNEL = np.ones((5, 5))
 
 # Define global variables
 carryOn = True
@@ -48,7 +50,7 @@ background = Entity(join('media', 'fancy-court.png'))
 #enemy = AI(join('media', 'fancy-paddle-grey.png'), followSpeed=4, posX=758, posY=236)
 player1 = Player(join('media', 'fancy-paddle-green.png'), posX=10, posY=236)
 player2 = Player(join('media', 'fancy-paddle-green.png'), posX=758, posY=236)
-ball = Ball(join('media', 'fancy-ball.png'), player1, player2, direction=(1, 0), speed=18, leftZone=16, rightZone=800-16)
+ball = Ball(join('media', 'fancy-ball.png'), player1, player2, direction=(1, 0), speed=10, leftZone=16, rightZone=800-16)
 player1Ghost = Entity(join('media', 'ghost.png'))
 player2Ghost = Entity(join('media', 'ghost.png'))
 drawGroup = pygame.sprite.Group()

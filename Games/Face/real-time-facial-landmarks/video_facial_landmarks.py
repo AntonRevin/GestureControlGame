@@ -1,8 +1,3 @@
-# USAGE
-# python video_facial_landmarks.py --shape-predictor shape_predictor_68_face_landmarks.dat
-
-# SRC: https://www.pyimagesearch.com/2017/04/10/detect-eyes-nose-lips-jaw-dlib-opencv-python/
-
 # import the necessary packages
 from imutils.video import VideoStream
 from imutils import face_utils
@@ -56,7 +51,7 @@ while True:
 		shape = predictor(gray, rect)
 		shape = face_utils.shape_to_np(shape)
 
-		""" 
+		"""
 		# Draw facial tracking points
 		for (x, y) in shape:
 			cv2.circle(frame, (x, y), 1, (0, 0, 255), -1)
@@ -76,14 +71,14 @@ while True:
 		_deltaX, _deltaXHistory = slidingAverage(_deltaXHistory, deltax, smoothingLevel)
 		_deltaY, _deltaYHistory = slidingAverage(_deltaYHistory, deltay, smoothingLevel)
 		# Draw direction arrow
-		cv2.arrowedLine(
+		"""cv2.arrowedLine(
 			frame, (x1,y1), 
 			(int(x1 + _deltaX * 16), 
 			int(y1 + (_deltaY)*4)), 
 			(255,0,0), 
 			thickness=5, 
 			tipLength=0.25
-		)
+		)"""
 
 		# Draw prediction
 		pred = "FORWARD"

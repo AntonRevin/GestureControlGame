@@ -40,8 +40,8 @@ class CameraHandler:
         mask = cv2.inRange(imgHSV, self.lowerBoundary, self.upperBoundary)
 
         # Perform morphological operations (image cleanup)
-        #maskOpen = cv2.morphologyEx(mask, cv2.MORPH_OPEN, self.openingKernel)
-        maskClose = cv2.morphologyEx(mask, cv2.MORPH_CLOSE, self.closingKernel)
+        maskOpen = cv2.morphologyEx(mask, cv2.MORPH_OPEN, self.openingKernel, iterations=2)
+        maskClose = cv2.morphologyEx(maskOpen, cv2.MORPH_CLOSE, self.closingKernel, iterations=4)
         maskFinal = maskClose
 
         # Find player control height
@@ -55,20 +55,23 @@ class CameraHandler:
         player2Ghost.rect.y = player2ControlHeight
 
         cv2.imshow("mask", mask)
+        cv2.imshow("input", img)
 
         # Return relative screenspace height
         return player1ControlHeight, player2ControlHeight
 
     def processFrame(self, frame, screenHeight, playerHistory):
         # Find the countours around the appropriately coloured regions
-        conts, h = cv2.findContours(frame.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
+        #conts, h = cv2.findContours(frame.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
+        pixelpointsCV2 = cv2.findNonZero(frame)
 
         # Find the smallest upright bounding rectangle around the found contours
         newHeight = -1
         x = - 100000
-        if len(conts) > 0:
-            x, y, w, h = cv2.boundingRect(conts[0])
-            newHeight = (y + (h/2)) * (screenHeight/120) - 64
+        #if not pixelpointsCV2 is None:
+        #x, y, w, h = cv2.boundingRect(conts[0])
+        x, y, w, h = cv2.boundingRect(pixelpointsCV2)
+        newHeight = (y + (h/2)) * (screenHeight/120) - 64
 
         # Perform sliding average on last 4 values for
         if newHeight != -1:
